@@ -1,0 +1,29 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <SwitchPreference
+        android:defaultValue="false"
+        android:key="pref_viewSeconds"
+        android:summary="@string/pref_title_view_seconds"
+        android:title="@string/pref_description_view_seconds"
+        />
+
+    <SwitchPreference
+        android:defaultValue="true"
+        android:key="pref_showToast"
+        android:summary="@string/pref_title_show_toast"
+        android:title="@string/pref_description_show_toast"
+        />
+
+    <Preference android:title="@string/pref_title_leave_feedback">
+        <intent android:action="android.intent.action.VIEW"
+                android:data="http://www.timekickap.com/support"/>
+    </Preference>
+
+    <SwitchPreference
+        android:defaultValue="true"
+        android:key="pref_feedback"
+        android:summary="@string/pref_title_feedback_prompt"
+        android:title="@string/pref_description_feedback_prompt"
+        />
+
+</PreferenceScreen>

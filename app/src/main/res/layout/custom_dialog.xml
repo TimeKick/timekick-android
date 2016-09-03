@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp">
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/customDialog1Minute"
+            android:text="1 Minute"/>
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/customDialog3Minute"
+            android:layout_below="@id/customDialog1Minute"
+            android:text="3 Minutes"/>
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/customDialog5Minute"
+            android:layout_below="@id/customDialog3Minute"
+            android:text="5 Minutes"/>
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/customDialog10Minute"
+            android:layout_below="@id/customDialog5Minute"
+            android:text="10 Minutes"/>
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/customDialogCustom"
+            android:layout_below="@id/customDialog10Minute"
+            android:text="Custom Interval"/>
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/customDialogCancel"
+            android:layout_below="@id/customDialogCustom"
+            android:text="Cancel"/>
+
+
+    </RelativeLayout>
+</LinearLayout>
