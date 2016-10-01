@@ -116,6 +116,9 @@ public class TTS extends IntentService implements TextToSpeech.OnInitListener,Te
         StringBuilder msgStr = new StringBuilder();
         Format formatter = new SimpleDateFormat("h:mm a");
         msgStr.append(formatter.format(new Date()));
+        if (msgStr.toString().split(":")[1].startsWith("0") && !msgStr.toString().split(":")[1].startsWith("00")) {
+            msgStr.replace(msgStr.indexOf(":")+1,msgStr.indexOf(":")+2,"O");
+        }
         mTts.speak(msgStr.toString(), TextToSpeech.QUEUE_FLUSH, null);
 
         Boolean show_toast = true;

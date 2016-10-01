@@ -9,6 +9,9 @@ import android.os.PowerManager;
 import android.util.Log;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Timer;
+import java.util.TimerTask;
+
 import com.timekick.service.TTS;
 
 /**
@@ -31,6 +34,34 @@ public class AlarmManagerBroadcastReceiver extends BroadcastReceiver {
         wl.acquire();
 
         speakText(context,intent);
+
+        if (intent.hasExtra("MODE") && intent.hasExtra("INTERVAL")) {
+            Long interval = intent.getLongExtra("INTERVAL",0);
+            String mode = intent.getStringExtra("MODE");
+            switch (mode) {
+                case "TIME":
+                    SetTimeReminder(context,interval);
+                    break;
+                case "COUNTDOWN":
+                    if (intent.hasExtra("TARGET")) {
+                        Long target = intent.getLongExtra("TARGET",0);
+                        SetCountdownReminder(context,interval,target);
+                    }
+                    break;
+                case "TARGET":
+                    if (intent.hasExtra("TARGET")) {
+                        Long target = intent.getLongExtra("TARGET",0);
+                        SetTargetReminder(context, interval, target);
+                    }
+                    break;
+                case "FINAL":
+                    if (intent.hasExtra("TARGET")) {
+                        Long target = intent.getLongExtra("TARGET",0);
+                        SetFinalCountdownReminder(context,target);
+                    }
+                    break;
+            }
+        }
 
         // Release the lock
         wl.release();
@@ -62,6 +93,8 @@ public class AlarmManagerBroadcastReceiver extends BroadcastReceiver {
         AlarmManager am = (AlarmManager) context
                 .getSystemService(Context.ALARM_SERVICE);
         Intent intent = new Intent(context, AlarmManagerBroadcastReceiver.class);
+        intent.putExtra("INTERVAL",repeatInterval);
+        intent.putExtra("MODE","TIME");
         PendingIntent pi = PendingIntent.getBroadcast(context, TIME_MODE_ID, intent, 0);
 
         int delay = 60 - Calendar.getInstance().get(Calendar.SECOND);
@@ -75,12 +108,13 @@ public class AlarmManagerBroadcastReceiver extends BroadcastReceiver {
         AlarmManager am = (AlarmManager) context
                 .getSystemService(Context.ALARM_SERVICE);
         Intent intent = new Intent(context, AlarmManagerBroadcastReceiver.class);
-        intent.putExtra("MODE","COUNTDOWN");
-        intent.putExtra("TARGET",target);
+        intent.putExtra("MODE", "COUNTDOWN");
+        intent.putExtra("TARGET", target);
         PendingIntent pi = PendingIntent.getBroadcast(context, COUNTDOWN_MODE_ID, intent, 0);
 
-        am.setRepeating(AlarmManager.RTC_WAKEUP,  System.currentTimeMillis() + repeatInterval * 1000,
-                repeatInterval * 1000, pi);
+        //am.setRepeating(AlarmManager.RTC_WAKEUP,  System.currentTimeMillis() + repeatInterval * 1000,
+        //        repeatInterval * 1000, pi);
+        am.setExact(AlarmManager.RTC_WAKEUP,System.currentTimeMillis() + repeatInterval * 1000,pi);
 
         SetFinalCountdownReminder(context, target);
     }
@@ -104,25 +138,41 @@ public class AlarmManagerBroadcastReceiver extends BroadcastReceiver {
         c.set(Calendar.SECOND, 0);
         c.set(Calendar.MILLISECOND, 0);
 
-        Log.e("ALARM","Repeating alarm will start at: " + c.getTime());
+        Log.e("ALARM", "Repeating alarm will start at: " + c.getTime());
 
-        am.setRepeating(AlarmManager.RTC_WAKEUP, c.getTimeInMillis(),
-                repeatInterval * 1000, pi);
+        //am.setRepeating(AlarmManager.RTC_WAKEUP, c.getTimeInMillis(),
+        //        repeatInterval * 1000, pi);
+        am.setExact(AlarmManager.RTC_WAKEUP,c.getTimeInMillis(),pi);
 
         SetFinalCountdownReminder(context,target);
     }
 
-    public void SetFinalCountdownReminder(Context context, long target) {
+    public void SetFinalCountdownReminder(final Context context, final long target) {
         AlarmManager am = (AlarmManager) context
                 .getSystemService(Context.ALARM_SERVICE);
-        Intent intent = new Intent(context, AlarmManagerBroadcastReceiver.class);
+        final Intent intent = new Intent(context, AlarmManagerBroadcastReceiver.class);
         intent.putExtra("MODE","FINAL");
         intent.putExtra("TARGET",target);
+        intent.putExtra("INTERVAL", new Long(1000));
         PendingIntent pi = PendingIntent.getBroadcast(context, FINAL_MODE_ID, intent, 0);
 
         //Start 10 seconds before target
-        am.setRepeating(AlarmManager.RTC_WAKEUP,  target - (10*1000),
-                1000, pi);
+        if (System.currentTimeMillis() >= (target - (10*1000))) {
+            new Timer().scheduleAtFixedRate(new TimerTask() {
+                @Override
+                public void run() {
+                    if (System.currentTimeMillis() < target) {
+                        speakText(context, intent);
+                    } else {
+                        cancel();
+                    }
+                }
+            }, 0, 1000);
+        } else {
+            am.setExact(AlarmManager.RTC_WAKEUP, target - (10 * 1000), pi);
+        }
+        //am.setRepeating(AlarmManager.RTC_WAKEUP,  target - (10*1000),
+        //        1000, pi);
     }
 
     public void CancelAlarm(Context context) {
