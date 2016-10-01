@@ -66,8 +66,9 @@ public class AlarmManagerBroadcastReceiver extends BroadcastReceiver {
 
         int delay = 60 - Calendar.getInstance().get(Calendar.SECOND);
 
-        am.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + delay * 1000,
-                repeatInterval * 1000, pi);
+        //am.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + delay * 1000,
+         //       repeatInterval * 1000, pi);
+        am.setExact(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + delay * 1000, pi);
     }
 
     public void SetCountdownReminder(Context context, long repeatInterval, long target) {
