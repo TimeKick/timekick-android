@@ -101,7 +101,11 @@ public class AlarmManagerBroadcastReceiver extends BroadcastReceiver {
 
         //am.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + delay * 1000,
          //       repeatInterval * 1000, pi);
-        am.setExact(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + delay * 1000, pi);
+        if (android.os.Build.VERSION.SDK_INT >= 19) {
+            am.setExact(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + delay * 1000, pi);
+        } else {
+            am.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + delay * 1000, pi);
+        }
     }
 
     public void SetCountdownReminder(Context context, long repeatInterval, long target) {
@@ -114,7 +118,11 @@ public class AlarmManagerBroadcastReceiver extends BroadcastReceiver {
 
         //am.setRepeating(AlarmManager.RTC_WAKEUP,  System.currentTimeMillis() + repeatInterval * 1000,
         //        repeatInterval * 1000, pi);
-        am.setExact(AlarmManager.RTC_WAKEUP,System.currentTimeMillis() + repeatInterval * 1000,pi);
+        if (android.os.Build.VERSION.SDK_INT >= 19) {
+            am.setExact(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + repeatInterval * 1000, pi);
+        } else {
+            am.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + repeatInterval * 1000, pi);
+        }
 
         SetFinalCountdownReminder(context, target);
     }
@@ -142,7 +150,11 @@ public class AlarmManagerBroadcastReceiver extends BroadcastReceiver {
 
         //am.setRepeating(AlarmManager.RTC_WAKEUP, c.getTimeInMillis(),
         //        repeatInterval * 1000, pi);
-        am.setExact(AlarmManager.RTC_WAKEUP,c.getTimeInMillis(),pi);
+        if (android.os.Build.VERSION.SDK_INT >= 19) {
+            am.setExact(AlarmManager.RTC_WAKEUP, c.getTimeInMillis(), pi);
+        } else {
+            am.set(AlarmManager.RTC_WAKEUP, c.getTimeInMillis(), pi);
+        }
 
         SetFinalCountdownReminder(context,target);
     }
@@ -169,7 +181,11 @@ public class AlarmManagerBroadcastReceiver extends BroadcastReceiver {
                 }
             }, 0, 1000);
         } else {
-            am.setExact(AlarmManager.RTC_WAKEUP, target - (10 * 1000), pi);
+            if (android.os.Build.VERSION.SDK_INT >= 19) {
+                am.setExact(AlarmManager.RTC_WAKEUP, target - (10 * 1000), pi);
+            } else {
+                am.set(AlarmManager.RTC_WAKEUP, target - (10 * 1000), pi);
+            }
         }
         //am.setRepeating(AlarmManager.RTC_WAKEUP,  target - (10*1000),
         //        1000, pi);

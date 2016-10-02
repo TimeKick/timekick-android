@@ -114,7 +114,7 @@ public class TTS extends IntentService implements TextToSpeech.OnInitListener,Te
 
     private void speakCurrentTime() {
         StringBuilder msgStr = new StringBuilder();
-        Format formatter = new SimpleDateFormat("h:mm a");
+        Format formatter = new SimpleDateFormat("h:mm");
         msgStr.append(formatter.format(new Date()));
         if (msgStr.toString().split(":")[1].startsWith("0") && !msgStr.toString().split(":")[1].startsWith("00")) {
             msgStr.replace(msgStr.indexOf(":")+1,msgStr.indexOf(":")+2,"O");
@@ -185,7 +185,7 @@ public class TTS extends IntentService implements TextToSpeech.OnInitListener,Te
         long s = MILLISECONDS.toSeconds(millis) % 60;
         if (s > 0) {
             String label = (s > 1)?"seconds":"second";
-            formattedString.append(String.format("%d %s ",s,label));
+            //formattedString.append(String.format("%d %s ",s,label));
         }
 
         if (formattedString.length() > 0) {
